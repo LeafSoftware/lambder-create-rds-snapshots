@@ -52,7 +52,7 @@ class RdsSnapper:
     time_str = time_str.replace(':', '').replace('+', '').replace('.', '')
     return source_name + '-' + time_str
 
-  # Takes an snapshot or volume, returns the backup source
+  # Takes an snapshot, returns the backup source
   def get_backup_source(self, snapshot):
     snaparn=get_snapshot_arn(snapshot['DBSnapshotIdentifier'])
     snaptags=self.rds.list_tags_for_resource(ResourceName=snaparn)['TagList']
