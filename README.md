@@ -2,43 +2,38 @@
 
 create-rds-snapshots is an AWS Lambda function for use with Lambder.
 
-REQUIRES:
+## REQUIRES:
 * python-lambder
 
-## Getting Started
+This lambda function creates an RDS snapshot from each RDS instance
+tagged with Key: 'LambderBackup'. The function will retain at most 3 snapshots
+and delete the oldest snapshot to stay under this threshold.
 
-1) Test the sample lambda function
+## Installation
 
-    python lambda/create-rds-snapshots/create-rds-snapshots.py
+1. Clone this repo
+2. `cp example_lambder.json  lambder.json`
+3. Edit lambder.json to set your S3  bucket
+4. `lambder function deploy`
 
-2) Deploy the sample Lambda function to AWS
+## Configuration
 
-    lambder functions deploy
+Create a file `config.json` within `lambda/create-rds-snapshots` and define the following parameters as JSON:
 
-3) Invoke the sample Lambda function in AWS
+* AWS_REGION: The region in which the lambda will be running
+* ACCOUNT_ID: The AWS account id in which the lambda will be running
 
-    lambder functions invoke --input input/ping.json
+## Usage
 
-4) Add useful code to lambda/create-rds-snapshots/create-rds-snapshots.py
+Schedule the function with a new event. Remember that the cron expression is
+based on UTC.
 
-5) Add any permissions you need to access other AWS resources to iam/policy.json
+    lambder events add \
+      --name CreateRdsSnapshots \
+      --function-name Lambder-create-rds-snapshots \
+      --cron 'cron(0 6 ? * * *)'
 
-6) Update your lambda and permissions policy in one go
+## TODO
 
-    lambder functions deploy
-
-## Sharing your lambder function
-
-If you decide to share your lambder function, you want to be sure you don't share
-the name of your s3 bucket. We suggest you add `lambder.json` to your
-`.gitignore` so it won't be commited to your repo. Instead, copy it to
-`example_lambder.json` and remove any secrets before pushing to a public
-repository.
-
-## Using virtualenvwrapper
-
-Your Lambdas should be as small as possible to reduce spinup time. If you need
-to include extra python modules, use virtualenvwrapper.
-The deploy script will look for a site-packages directory in
-$WORKON_HOME/lambder-create-rds-snapshots and bundle those packages into the zip
-that it uploads to AWS Lambda.
+* Parameterize the tag in the input event object
+* Parameterize number of old snapshots to retain
