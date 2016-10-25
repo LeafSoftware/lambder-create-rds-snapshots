@@ -27,7 +27,7 @@ class RdsSnapper:
       self.AWS_REGION=config_json['AWS_REGION']
       self.ACCOUNT_ID=config_json['ACCOUNT_ID']
 
-  def get_snapshot_arn(self, spapshotid):
+  def get_snapshot_arn(self, snapshotid):
     return "arn:aws:rds:{0}:{1}:snapshot:{2}".format(self.AWS_REGION,self.ACCOUNT_ID,snapshotid)
 
   def get_db_arn(self, dbid):
@@ -38,7 +38,7 @@ class RdsSnapper:
     backup_databases=[]
 
     for database in all_databases:
-      dbarn=get_db_arn(database['DBInstanceIdentifier'])
+      dbarn=self.get_db_arn(database['DBInstanceIdentifier'])
       tags=self.rds.list_tags_for_resource(ResourceName=dbarn)['TagList']
 
       if any(d['Key'] == self.TAG_NAME for d in tags):
@@ -54,7 +54,7 @@ class RdsSnapper:
 
   # Takes an snapshot, returns the backup source
   def get_backup_source(self, snapshot):
-    snaparn=get_snapshot_arn(snapshot['DBSnapshotIdentifier'])
+    snaparn=self.get_snapshot_arn(snapshot['DBSnapshotIdentifier'])
     snaptags=self.rds.list_tags_for_resource(ResourceName=snaparn)['TagList']
     tags = filter(lambda x: x['Key'] == self.TAG_NAME, snaptags)
 
@@ -69,7 +69,7 @@ class RdsSnapper:
     results={}
 
     for snapshot in all_snapshots:
-      snaparn=get_snapshot_arn(snapshot['DBSnapshotIdentifier'])
+      snaparn=self.get_snapshot_arn(snapshot['DBSnapshotIdentifier'])
       tags=self.rds.list_tags_for_resource(ResourceName=snaparn)['TagList']
 
       if any(d['Key'] == self.TAG_NAME for d in tags):
@@ -133,5 +133,3 @@ class RdsSnapper:
         DBInstanceIdentifier=databasename,
         Tags=[{'Key': self.TAG_NAME, 'Value': databasename}]
       )
-
-  
