@@ -15,8 +15,12 @@
       "Action": [
         "rds:DescribeDBInstances",
         "rds:DescribeDBSnapshots",
+        "rds:DescribeDBClusters",
+        "rds:DescribeDBClusterSnapshots",
         "rds:CreateDBSnapshot",
+        "rds:CreateDBClusterSnapshot",
         "rds:DeleteDBSnapshot",
+        "rds:DeleteDBClusterSnapshot",
         "rds:ListTagsForResource"
       ],
       "Resource": "*"
