@@ -1,6 +1,6 @@
 {
   "name": "create-rds-snapshots",
-  "s3_bucket": "netfor-devops",
+  "s3_bucket": "something-devops",
   "timeout": 30,
   "memory": 128,
   "description": ""
